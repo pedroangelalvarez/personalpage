@@ -1,29 +1,34 @@
-import ReactDOM from "react-dom"
 import lerp from "lerp"
 import React, { Suspense, useRef, useEffect } from "react"
 import { Canvas, Dom, useFrame, useLoader } from "react-three-fiber"
 import { TextureLoader, LinearFilter } from "three"
 import { Block, useBlock } from "./blocks"
-import Diamonds from "./diamonds/Diamonds"
 import state from "./store"
-import "./CustomMaterial"
 import "./App.css"
 
 function Plane({ color = "white", map, ...props }) {
-  const { viewportHeight, offsetFactor } = useBlock()
-  const material = useRef()
-  let last = state.top.current
-  useFrame(() => {
-    const { pages, top } = state
-    material.current.scale = lerp(material.current.scale, offsetFactor - top.current / ((pages - 1) * viewportHeight), 0.1)
-    material.current.shift = lerp(material.current.shift, (top.current - last) / 150, 0.1)
-    last = top.current
-  })
   return (
     <mesh {...props}>
-      <planeBufferGeometry attach="geometry" args={[1, 1, 32, 32]} />
-      <customMaterial ref={material} attach="material" color={color} map={map} />
+      <planeBufferGeometry attach="geometry" />
+      <meshBasicMaterial attach="material" color={color} map={map} />
     </mesh>
+  )
+}
+
+function Cross() {
+  const ref = useRef()
+  const { viewportHeight } = useBlock()
+  useFrame(() => {
+    const curTop = state.top.current
+    const curY = ref.current.rotation.z
+    const nextY = (curTop / ((state.pages - 1) * viewportHeight)) * Math.PI
+    ref.current.rotation.z = lerp(curY, nextY, 0.1)
+  })
+  return (
+    <group ref={ref} scale={[2, 2, 2]}>
+      <Plane scale={[1, 0.2, 0.2]} color="#e2bfca" />
+      <Plane scale={[0.2, 1, 0.2]} color="#e2bfca" />
+    </group>
   )
 }
 
@@ -41,7 +46,7 @@ function Content({ left, children, map }) {
 
 function Stripe() {
   const { contentMaxWidth } = useBlock()
-  return <Plane scale={[100, contentMaxWidth, 1]} rotation={[0, 0, Math.PI / 4]} position={[0, 0, -1]} color="#171725" />
+  return <Plane scale={[100, contentMaxWidth, 1]} rotation={[0, 0, Math.PI / 4]} position={[0, 0, -1]} color="#e3f6f5" />
 }
 
 function Pages() {
@@ -75,6 +80,9 @@ function Pages() {
       {/* Last section */}
       <Block factor={1.5} offset={2}>
         <Content left map={img3}>
+          <Block factor={-0.5}>
+            <Cross />
+          </Block>
           <Dom style={{ width: pixelWidth / (mobile ? 1 : 2), textAlign: "left" }} position={[-contentMaxWidth / 2, -contentMaxWidth / 2 / aspect - 0.4, 1]}>
             Education and enlightenment.
           </Dom>
@@ -90,7 +98,7 @@ function Startup() {
   return (
     <mesh ref={ref} position={[0, 0, 200]} scale={[100, 100, 1]}>
       <planeBufferGeometry attach="geometry" />
-      <meshBasicMaterial attach="material" color="#070712" transparent />
+      <meshBasicMaterial attach="material" color="#dfdfdf" transparent />
     </mesh>
   )
 }
@@ -101,10 +109,9 @@ function App() {
   useEffect(() => void onScroll({ target: scrollArea.current }), [])
   return (
     <>
-      <Canvas orthographic camera={{ zoom: state.zoom, position: [0, 0, 500] }}>
+      <Canvas className="canvas" orthographic camera={{ zoom: state.zoom, position: [0, 0, 500] }}>
         <Suspense fallback={<Dom center className="loading" children="Loading..." />}>
           <Pages />
-          <Diamonds />
           <Startup />
         </Suspense>
       </Canvas>
@@ -114,8 +121,6 @@ function App() {
     </>
   )
 }
-
-ReactDOM.render(<App />, document.getElementById("root"))
 
 
 export default App;
