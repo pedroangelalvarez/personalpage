@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.5",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.0",
-    "web-vitals": "^0.2.4"
+    "lerp": "1.0.3",
+    "react": "experimental",
+    "react-dom": "experimental",
+    "react-scripts": "3.2.0",
+    "react-three-fiber": "4.0.0-beta.12",
+    "three": "0.111.0"
+  },
+  "devDependencies": {
+    "typescript": "3.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -27,6 +29,7 @@
     "production": [
       ">0.2%",
       "not dead",
+      "not ie <= 11",
       "not op_mini all"
     ],
     "development": [
@@ -34,5 +37,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "Personal Page",
+  "main": "src/index.js",
+  "repository": "https://github.com/pedroangelalvarez/personalpage.git",
+  "author": "Pedro Alvarez <pedroangel.alvarez24@gmail.com>",
+  "license": "MIT"
 }
