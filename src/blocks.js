@@ -35,6 +35,7 @@ function useBlock() {
   const margin = canvasWidth * (mobile ? 0.2 : 0.1)
   const contentMaxWidth = canvasWidth * (mobile ? 0.8 : 0.6)
   const sectionHeight = canvasHeight * ((pages - 1) / (sections - 1))
+  const offsetFactor = (offset + 1.0) / sections
   return {
     viewport,
     offset,
@@ -45,7 +46,8 @@ function useBlock() {
     mobile,
     margin,
     contentMaxWidth,
-    sectionHeight
+    sectionHeight,
+    offsetFactor
   }
 }
 

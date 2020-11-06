@@ -4,6 +4,7 @@ import { Canvas, Dom, useFrame, useLoader } from "react-three-fiber"
 import { TextureLoader, LinearFilter } from "three"
 import { Block, useBlock } from "./blocks"
 import state from "./store"
+import { Text, MultilineText } from "./components/Text"
 import "./App.css"
 
 function Plane({ color = "white", map, ...props }) {
@@ -55,8 +56,12 @@ function Pages() {
   const { contentMaxWidth, mobile } = useBlock()
   const aspect = 1.75
   const pixelWidth = contentMaxWidth * state.zoom
+  
   return (
     <>
+      <Block factor={1} offset={0}>
+        
+      </Block>
       {/* First section */}
       <Block factor={1.5} offset={0}>
         <Content left map={img1}>
