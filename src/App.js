@@ -1,110 +1,88 @@
-import lerp from "lerp"
-import React, { Suspense, useRef, useEffect } from "react"
-import { Canvas, Dom, useFrame, useLoader } from "react-three-fiber"
+import React, { Suspense, useEffect, useRef, useMemo } from "react"
+import { Canvas, Dom, useLoader, useFrame } from "react-three-fiber"
 import { TextureLoader, LinearFilter } from "three"
+import lerp from "lerp"
+import { Text, MultilineText } from "./components/Text"
+import Diamonds from "./diamonds/Diamonds"
+import Plane from "./components/Plane"
+import GitHubIcon from '@material-ui/icons/GitHub';
+import InstagramIcon from '@material-ui/icons/Instagram';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import { Block, useBlock } from "./blocks"
 import state from "./store"
-import { Text, MultilineText } from "./components/Text"
 import "./App.css"
-
-function Plane({ color = "white", map, ...props }) {
-  return (
-    <mesh {...props}>
-      <planeBufferGeometry attach="geometry" />
-      <meshBasicMaterial attach="material" color={color} map={map} />
-    </mesh>
-  )
-}
-
-function Cross() {
-  const ref = useRef()
-  const { viewportHeight } = useBlock()
-  useFrame(() => {
-    const curTop = state.top.current
-    const curY = ref.current.rotation.z
-    const nextY = (curTop / ((state.pages - 1) * viewportHeight)) * Math.PI
-    ref.current.rotation.z = lerp(curY, nextY, 0.1)
-  })
-  return (
-    <group ref={ref} scale={[2, 2, 2]}>
-      <Plane scale={[1, 0.2, 0.2]} color="#e2bfca" />
-      <Plane scale={[0.2, 1, 0.2]} color="#e2bfca" />
-    </group>
-  )
-}
-
-function Content({ left, children, map }) {
-  const { contentMaxWidth, canvasWidth, margin } = useBlock()
-  const aspect = 1.75
-  const alignRight = (canvasWidth - contentMaxWidth - margin) / 2
-  return (
-    <group position={[alignRight * (left ? -1 : 1), 0, 0]}>
-      <Plane scale={[contentMaxWidth, contentMaxWidth / aspect, 1]} color="#bfe2ca" map={map} />
-      {children}
-    </group>
-  )
-}
-
-function Stripe() {
-  const { contentMaxWidth } = useBlock()
-  return <Plane scale={[100, contentMaxWidth, 1]} rotation={[0, 0, Math.PI / 4]} position={[0, 0, -1]} color="#e3f6f5" />
-}
-
-function Pages() {
-  const textures = useLoader(TextureLoader, state.images)
-  const [img1, img2, img3] = textures.map(texture => ((texture.minFilter = LinearFilter), texture))
-  const { contentMaxWidth, mobile } = useBlock()
-  const aspect = 1.75
-  const pixelWidth = contentMaxWidth * state.zoom
-  
-  return (
-    <>
-      <Block factor={1} offset={0}>
-        
-      </Block>
-      {/* First section */}
-      <Block factor={1.5} offset={0}>
-        <Content left map={img1}>
-          <Dom style={{ width: pixelWidth / (mobile ? 1 : 2), textAlign: "left" }} position={[-contentMaxWidth / 2, -contentMaxWidth / 2 / aspect - 0.4, 1]}>
-            The substance can take you to heaven but it can also take you to hell.
-          </Dom>
-        </Content>
-      </Block>
-      {/* Second section */}
-      <Block factor={2.0} offset={1}>
-        <Content map={img2}>
-          <Dom style={{ width: pixelWidth / (mobile ? 1 : 2), textAlign: "right" }} position={[mobile ? -contentMaxWidth / 2 : 0, -contentMaxWidth / 2 / aspect - 0.4, 1]}>
-            We’ve found that the people whose EEG doesn’t show any alpha-wave activity when they’re relaxed aren’t likely to respond significantly to the substance.
-          </Dom>
-        </Content>
-      </Block>
-      {/* Stripe */}
-      <Block factor={-1.0} offset={1}>
-        <Stripe />
-      </Block>
-      {/* Last section */}
-      <Block factor={1.5} offset={2}>
-        <Content left map={img3}>
-          <Block factor={-0.5}>
-            <Cross />
-          </Block>
-          <Dom style={{ width: pixelWidth / (mobile ? 1 : 2), textAlign: "left" }} position={[-contentMaxWidth / 2, -contentMaxWidth / 2 / aspect - 0.4, 1]}>
-            Education and enlightenment.
-          </Dom>
-        </Content>
-      </Block>
-    </>
-  )
-}
 
 function Startup() {
   const ref = useRef()
   useFrame(() => (ref.current.material.opacity = lerp(ref.current.material.opacity, 0, 0.025)))
+  return <Plane ref={ref} color="#0e0e0f" position={[0, 0, 200]} scale={[100, 100, 1]} />
+}
+
+function Paragraph({ image, index, offset, factor, header, aspect, text }) {
+  const { contentMaxWidth: w, canvasWidth, margin, mobile } = useBlock()
+  const size = aspect < 1 && !mobile ? 0.65 : 1
+  const alignRight = (canvasWidth - w * size - margin) / 2
+  const pixelWidth = w * state.zoom * size
+  const left = !(index % 2)
+  const color = index % 2 ? "#D40749" : "#2FE8C3"
   return (
-    <mesh ref={ref} position={[0, 0, 200]} scale={[100, 100, 1]}>
-      <planeBufferGeometry attach="geometry" />
-      <meshBasicMaterial attach="material" color="#dfdfdf" transparent />
-    </mesh>
+    <Block factor={factor} offset={offset}>
+      <group position={[left ? -alignRight : alignRight, 0, 0]}>
+        <Plane map={image} args={[1, 1, 32, 32]} shift={75} size={size} aspect={aspect} scale={[w * size, (w * size) / aspect, 1]} frustumCulled={false} />
+        <Dom
+          style={{ width: pixelWidth / (mobile ? 1 : 2), textAlign: left ? "left" : "right" }}
+          position={[left || mobile ? (-w * size) / 2 : 0, (-w * size) / 2 / aspect - 0.4, 1]}>
+          <div tabIndex={index}>{text}</div>
+        </Dom>
+        <Text left={left} right={!left} size={w * 0.04} color={color} top position={[((left ? -w : w) * size) / 2, (w * size) / aspect / 2 + 0.5, -1]}>
+          {header}
+        </Text>
+        <Block factor={0.2}>
+          <Text opacity={0.5} size={w * 0.1} color="#1A1E2A" position={[((left ? w : -w) / 2) * size, (w * size) / aspect / 1.5, -10]}>
+            {"0" + (index + 1)}
+          </Text>
+        </Block>
+      </group>
+    </Block>
+  )
+}
+
+function Content() {
+  const images = useLoader(
+    TextureLoader,
+    state.paragraphs.map(({ image }) => image)
+  )
+  useMemo(() => images.forEach(texture => (texture.minFilter = LinearFilter)), [images])
+  const { contentMaxWidth: w, canvasWidth, canvasHeight, mobile } = useBlock()
+  return (
+    <>
+      <Block factor={1} offset={0}>
+        <Block factor={1.2}>
+          <Text center size={w * 0.08} position={[0, 0.5, -1]} color="#1dbc60">
+            Pedro Alvarez
+          </Text>
+        </Block>
+        <Block factor={1.0}>
+          <Dom position={[-w / 3.2, -w * 0.08 + 0.25, -1]}>Full Stack Developer.{mobile ? <br /> : " "}Bachelor of Computer Science.</Dom>
+        </Block>
+      </Block>
+      <Block factor={1.2} offset={5.7}>
+        <MultilineText top left size={w * 0.15} lineHeight={w / 5} position={[-w / 3.5, 0, -1]} color="#2fe8c3" text={"tres\ndos\nuno"} />
+      </Block>
+      {state.paragraphs.map((props, index) => (
+        <Paragraph key={index} index={index} {...props} image={images[index]} />
+      ))}
+      {state.stripes.map(({ offset, color, height }, index) => (
+        <Block key={index} factor={-1.5} offset={offset}>
+          <Plane args={[50, height, 32, 32]} shift={-4} color={color} rotation={[0, 0, Math.PI / 8]} position={[0, 0, -10]} />
+        </Block>
+      ))}
+      <Block factor={1.25} offset={8}>
+        <Dom className="bottom-left" position={[-canvasWidth / 2, -canvasHeight / 2, 0]}>
+          Culture is not your friend.
+        </Dom>
+      </Block>
+    </>
   )
 }
 
@@ -114,14 +92,38 @@ function App() {
   useEffect(() => void onScroll({ target: scrollArea.current }), [])
   return (
     <>
-      <Canvas className="canvas" orthographic camera={{ zoom: state.zoom, position: [0, 0, 500] }}>
+      <Canvas className="canvas" concurrent pixelRatio={1} orthographic camera={{ zoom: state.zoom, position: [0, 0, 500] }}>
         <Suspense fallback={<Dom center className="loading" children="Loading..." />}>
-          <Pages />
+          <Content />
           <Startup />
         </Suspense>
       </Canvas>
       <div className="scrollArea" ref={scrollArea} onScroll={onScroll}>
-        <div style={{ height: `${state.pages * 100}vh` }} />
+        {new Array(state.sections).fill().map((_, index) => (
+          <div key={index} id={"0" + index} style={{ height: `${(state.pages / state.sections) * 100}vh` }} />
+        ))}
+      </div>
+      <div className="frame">
+        <div className="frame__nav">
+          <a className="frame__link" href="#00" children="intro" />
+          <a className="frame__link" href="#01" children="Educación" />
+          <a className="frame__link" href="#02" children="Certificaciones" />
+          <a className="frame__link" href="#03" children="Skills" />
+          <a className="frame__link" href="#04" children="Consultoría" />
+          <a className="frame__link" href="#05" children="Proyectos" />
+          <a className="frame__link" href="#07" children="ContáGctame" />
+        </div>
+        <div className="frame__links">
+          <a className="frame__link" href="http://tympanus.net/Tutorials/PhysicsMenu/">
+            <GitHubIcon/>
+          </a>
+          <a className="frame__link" href="https://tympanus.net/codrops/?p=45441">
+            <InstagramIcon/>
+          </a>
+          <a className="frame__link" href="https://github.com/drcmda/the-substance">
+            <WhatsAppIcon/>
+          </a>
+        </div>
       </div>
     </>
   )

@@ -112,6 +112,7 @@ a:hover {
     grid-area: title;
 	}
 	.frame__links {
+    color: white;
 		grid-area: links;
     justify-self: end;
     margin: 0;
@@ -120,8 +121,8 @@ a:hover {
     pointer-events: auto;
   }
   .frame__nav {
-    grid-area: nav;
-		justify-self: end;
+    grid-area: title;
+		justify-self: start;
   }
   .bottom-left {
     padding: 0 0 2rem 3.7rem;
