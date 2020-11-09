@@ -9,8 +9,11 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import { Block, useBlock } from "./blocks"
+import { Helmet } from 'react-helmet'
 import state from "./store"
 import "./App.css"
+
+const TITLE = 'Pedro Alvarez'
 
 function Startup() {
   const ref = useRef()
@@ -78,8 +81,8 @@ function Content() {
         </Block>
       ))}
       <Block factor={1.25} offset={8}>
-        <Dom className="bottom-left" position={[-canvasWidth / 2, -canvasHeight / 2, 0]}>
-          Culture is not your friend.
+        <Dom className="bottom-center" position={[-canvasWidth / 2, -canvasHeight / 2, 0]}>
+          Hope.
         </Dom>
       </Block>
     </>
@@ -92,6 +95,9 @@ function App() {
   useEffect(() => void onScroll({ target: scrollArea.current }), [])
   return (
     <>
+      <Helmet>
+          <title>{ TITLE }</title>
+        </Helmet>
       <Canvas className="canvas" concurrent pixelRatio={1} orthographic camera={{ zoom: state.zoom, position: [0, 0, 500] }}>
         <Suspense fallback={<Dom center className="loading" children="Loading..." />}>
           <Content />
@@ -111,16 +117,16 @@ function App() {
           <a className="frame__link" href="#03" children="Skills" />
           <a className="frame__link" href="#04" children="Consultoría" />
           <a className="frame__link" href="#05" children="Proyectos" />
-          <a className="frame__link" href="#07" children="ContáGctame" />
+          <a className="frame__link" href="#07" children="Contáctame" />
         </div>
         <div className="frame__links">
-          <a className="frame__link" href="http://tympanus.net/Tutorials/PhysicsMenu/">
+          <a className="frame__link" href="https://github.com/pedroangelalvarez">
             <GitHubIcon/>
           </a>
-          <a className="frame__link" href="https://tympanus.net/codrops/?p=45441">
+          <a className="frame__link" href="https://www.instagram.com/the.thinkerr/">
             <InstagramIcon/>
           </a>
-          <a className="frame__link" href="https://github.com/drcmda/the-substance">
+          <a className="frame__link" href="https://wa.link/j8zb9a">
             <WhatsAppIcon/>
           </a>
         </div>
