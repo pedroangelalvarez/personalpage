@@ -18,7 +18,7 @@ const TITLE = 'Pedro Alvarez'
 function Startup() {
   const ref = useRef()
   useFrame(() => (ref.current.material.opacity = lerp(ref.current.material.opacity, 0, 0.025)))
-  return <Plane ref={ref} color="#0e0e0f" position={[0, 0, 200]} scale={[100, 100, 1]} />
+  return <Plane ref={ref} color="#303030" position={[0, 0, 200]} scale={[100, 100, 1]} />
 }
 
 function Paragraph({ image, index, offset, factor, header, aspect, text }) {
@@ -27,11 +27,11 @@ function Paragraph({ image, index, offset, factor, header, aspect, text }) {
   const alignRight = (canvasWidth - w * size - margin) / 2
   const pixelWidth = w * state.zoom * size
   const left = !(index % 2)
-  const color = index % 2 ? "#D40749" : "#2FE8C3"
+  const color = index % 2 ? "#e30000" : "#19c6ff"
   return (
     <Block factor={factor} offset={offset}>
       <group position={[left ? -alignRight : alignRight, 0, 0]}>
-        <Plane map={image} args={[1, 1, 32, 32]} shift={75} size={size} aspect={aspect} scale={[w * size, (w * size) / aspect, 1]} frustumCulled={false} />
+        <Plane map={image} args={[1, 1, 25, 25]} shift={75} size={size} aspect={aspect} scale={[w * size, (w * size) / aspect, 1]} frustumCulled={false} />
         <Dom
           style={{ width: pixelWidth / (mobile ? 1 : 2), textAlign: left ? "left" : "right" }}
           position={[left || mobile ? (-w * size) / 2 : 0, (-w * size) / 2 / aspect - 0.4, 1]}>
@@ -42,7 +42,7 @@ function Paragraph({ image, index, offset, factor, header, aspect, text }) {
         </Text>
         <Block factor={0.2}>
           <Text opacity={0.5} size={w * 0.1} color="#1A1E2A" position={[((left ? w : -w) / 2) * size, (w * size) / aspect / 1.5, -10]}>
-            {"0" + (index + 1)}
+            {"" + (index + 1)}
           </Text>
         </Block>
       </group>
@@ -61,6 +61,13 @@ function Content() {
     <>
       <Block factor={1} offset={0}>
         <Block factor={1.2}>
+          <Text center size={w * 0.08} position={[0, 0.15, -1]} color="#dddddd">
+            Bienvenido
+          </Text>
+        </Block>
+      </Block>
+      <Block factor={1.3} offset={0.4}>
+        <Block factor={1.3}>
           <Text center size={w * 0.08} position={[0, 0.5, -1]} color="#1dbc60">
             Pedro Alvarez
           </Text>
@@ -80,8 +87,8 @@ function Content() {
           <Plane args={[50, height, 32, 32]} shift={-4} color={color} rotation={[0, 0, Math.PI / 8]} position={[0, 0, -10]} />
         </Block>
       ))}
-      <Block factor={1.25} offset={8}>
-        <Dom className="bottom-center" position={[-canvasWidth / 2, -canvasHeight / 2, 0]}>
+      <Block factor={1.25} offset={0.4}>
+        <Dom className="bottom-center" position={[-canvasWidth / 2, -canvasHeight / 2, 100]}>
           Hope.
         </Dom>
       </Block>
@@ -106,18 +113,18 @@ function App() {
       </Canvas>
       <div className="scrollArea" ref={scrollArea} onScroll={onScroll}>
         {new Array(state.sections).fill().map((_, index) => (
-          <div key={index} id={"0" + index} style={{ height: `${(state.pages / state.sections) * 100}vh` }} />
+          <div key={index} id={index} style={{ height: `${(state.pages / state.sections) * 100}vh` }} />
         ))}
       </div>
       <div className="frame">
         <div className="frame__nav">
-          <a className="frame__link" href="#00" children="intro" />
-          <a className="frame__link" href="#01" children="Educación" />
-          <a className="frame__link" href="#02" children="Certificaciones" />
-          <a className="frame__link" href="#03" children="Skills" />
-          <a className="frame__link" href="#04" children="Consultoría" />
-          <a className="frame__link" href="#05" children="Proyectos" />
-          <a className="frame__link" href="#07" children="Contáctame" />
+          <a className="frame__link" href="#0" children="intro" />
+          <a className="frame__link" href="#1" children="Educación" />
+          <a className="frame__link" href="#2" children="Certificaciones" />
+          <a className="frame__link" href="#3" children="Skills" />
+          <a className="frame__link" href="#4" children="Consultoría" />
+          <a className="frame__link" href="#5" children="Proyectos" />
+          <a className="frame__link" href="#6" children="Contáctame" />
         </div>
         <div className="frame__links">
           <a className="frame__link" href="https://github.com/pedroangelalvarez">

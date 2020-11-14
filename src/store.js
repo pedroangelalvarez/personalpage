@@ -2,8 +2,8 @@ import { createRef } from "react"
 import { Vector3 } from "three"
 
 const state = {
-  sections: 9,
-  pages: 8,
+  sections: 8,
+  pages: 7,
   zoom: 75,
   paragraphs: [
     {
@@ -11,7 +11,7 @@ const state = {
       factor: 1.75,
       header: "Educación",
       image: "/unt.jpg",
-      aspect: 1.51,
+      aspect: 1.7,
       text: "5 años de preparación academica en cursos de programación, gestión de bases de datos, inteligencia artificial, sistemas inteligentes, visión computacional, redes entre otros."
     },
     {
@@ -28,7 +28,7 @@ const state = {
       factor: 2.25,
       header: "Skills",
       image: "/skills.jpg",
-      aspect: 1.5037,
+      aspect: 1.5,
       text:
         "Dominio de Python, Java, C++, React, React Native, PHP, Javascript, SQL entre otros"
     },
@@ -37,7 +37,7 @@ const state = {
       factor: 1.75,
       header: "Consultoría",
       image: "/asesoria.jpg",
-      aspect: 1.55,
+      aspect: 1.5,
       text:
         "Consultoría de sistemas ERP, empotrados e Internet de las cosas."
     },
@@ -52,7 +52,7 @@ const state = {
     },
     { 
       offset: 7, 
-      factor: 1.05, 
+      factor: 1, 
       header: "Contáctame", 
       image: "/telefono.jpg", 
       aspect: 1.77, 
