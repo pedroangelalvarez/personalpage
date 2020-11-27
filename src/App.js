@@ -3,7 +3,7 @@ import { Canvas, Dom, useLoader, useFrame } from "react-three-fiber"
 import { TextureLoader, LinearFilter } from "three"
 import lerp from "lerp"
 import { Text, MultilineText } from "./components/Text"
-import Diamonds from "./diamonds/Diamonds"
+import Cpps from "./obj/Cpps"
 import Plane from "./components/Plane"
 import GitHubIcon from '@material-ui/icons/GitHub';
 import InstagramIcon from '@material-ui/icons/Instagram';
@@ -23,7 +23,7 @@ function Startup() {
 
 function Paragraph({ image, index, offset, factor, header, aspect, text }) {
   const { contentMaxWidth: w, canvasWidth, margin, mobile } = useBlock()
-  const size = aspect < 1 && !mobile ? 0.65 : 1
+  const size = aspect < 1 && !mobile ? 0.45 : 1
   const alignRight = (canvasWidth - w * size - margin) / 2
   const pixelWidth = w * state.zoom * size
   const left = !(index % 2)
@@ -108,6 +108,7 @@ function App() {
       <Canvas className="canvas" concurrent pixelRatio={1} orthographic camera={{ zoom: state.zoom, position: [0, 0, 500] }}>
         <Suspense fallback={<Dom center className="loading" children="Loading..." />}>
           <Content />
+          <Cpps />
           <Startup />
         </Suspense>
       </Canvas>
@@ -118,7 +119,7 @@ function App() {
       </div>
       <div className="frame">
         <div className="frame__nav">
-          <a className="frame__link" href="#0" children="intro" />
+          <a className="frame__link" href="#0" children="Inicio" />
           <a className="frame__link" href="#1" children="Educación" />
           <a className="frame__link" href="#2" children="Certificaciones" />
           <a className="frame__link" href="#3" children="Skills" />
